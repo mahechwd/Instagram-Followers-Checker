@@ -3,7 +3,7 @@ const multer = require("multer");
 const analyseRoute = require("./routes/analyse");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Configure upload middleware
 const upload = multer({ dest: "uploads/" });
