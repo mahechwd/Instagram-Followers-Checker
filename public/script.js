@@ -1,7 +1,14 @@
 const form = document.getElementById("uploadForm");
+const status = document.getElementById("status");
+const dontFollowList = document.getElementById("dontFollowBack");
+const notFollowList = document.getElementById("notFollowedBack");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();   // Prevents the default form submission behavior (which would reload the page).
+  e.preventDefault();
+
+  status.textContent = "Processing...";
+  dontFollowList.innerHTML = "";
+  notFollowList.innerHTML = "";
 
   const formData = new FormData(form);
 
@@ -11,21 +18,28 @@ form.addEventListener("submit", async (e) => {
       body: formData
     });
 
-    // Check if the response is not OK (status code outside the range 200-299)
     if (!response.ok) {
-      const errorText = await response.text();
-      alert("Server error:\n" + errorText);
-      return;
+      throw new Error("Server error");
     }
 
-    // If the response is OK, parse the JSON data
     const data = await response.json();
 
-    console.log(data);
-    alert("Upload successful! Check console for results.");
+    data.dontFollowBack.forEach(user => {
+      const li = document.createElement("li");
+      li.textContent = user;
+      dontFollowList.appendChild(li);
+    });
+
+    data.notFollowedBack.forEach(user => {
+      const li = document.createElement("li");
+      li.textContent = user;
+      notFollowList.appendChild(li);
+    });
+
+    status.textContent = "Done!";
 
   } catch (err) {
     console.error(err);
-    alert("Request failed.");
+    status.textContent = "Upload failed.";
   }
 });
