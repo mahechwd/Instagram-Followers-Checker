@@ -3,6 +3,7 @@ const router = express.Router();
 const AdmZip = require("adm-zip");
 const fs = require("fs");
 const path = require("path");
+const { analyseFollowers } = require("../services/analyser");
 
 function findFileRecursive(dir, targetName) {
   const files = fs.readdirSync(dir);
@@ -51,12 +52,12 @@ router.post("/", (req, res) => {
       });
     }
 
-    // Send back paths (test)
-    res.json({
-      message: "Files found",
+    const results = analyseFollowers(
       followersPath,
       followingPath
-    });
+    );
+
+    res.json(results);
 
   } catch (err) {
     console.error(err);
