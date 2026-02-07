@@ -1,30 +1,25 @@
 const express = require("express");
 const multer = require("multer");
-const analyzeRoute = require("./routes/analyze");
+const analyseRoute = require("./routes/analyse");
 
 const app = express();
 const PORT = 3000;
 
-const upload = multer({
-  dest: "uploads/",
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === "application/zip") {
-      cb(null, true);
-    } else {
-      cb(new Error("Only ZIP files allowed"));
-    }
-  }
-});
+// Configure upload middleware
+const upload = multer({ dest: "uploads/" });
 
+// Serve frontend files
 app.use(express.static("public"));
 
+// Health check route
 app.get("/api/health", (req, res) => {
   res.json({ status: "Server is running" });
 });
 
+// Analyse ZIP route
+app.use("/api/analyse", upload.single("zip"), analyseRoute);
 
-app.use("/api/analyze", upload.single("zip"), analyzeRoute);
-
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

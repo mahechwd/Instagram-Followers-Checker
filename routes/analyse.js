@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+<<<<<<< HEAD
 const AdmZip = require("adm-zip");
 const fs = require("fs");
 const path = require("path");
@@ -64,6 +65,11 @@ router.post("/", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "ZIP processing failed" });
   }
+=======
+
+router.post("/", (req, res) => {
+  res.json({ message: "Analyze route working!" });
+>>>>>>> 93c50ff
 });
 
 module.exports = router;

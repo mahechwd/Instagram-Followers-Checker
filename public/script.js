@@ -1,17 +1,31 @@
 const form = document.getElementById("uploadForm");
-const output = document.getElementById("output");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault();   // Prevents the default form submission behavior (which would reload the page).
 
   const formData = new FormData(form);
 
-  const response = await fetch("/api/analyze", {
-    method: "POST",
-    body: formData
-  });
+  try {
+    const response = await fetch("/api/analyse", {
+      method: "POST",
+      body: formData
+    });
 
-  const data = await response.json();
+    // Check if the response is not OK (status code outside the range 200-299)
+    if (!response.ok) {
+      const errorText = await response.text();
+      alert("Server error:\n" + errorText);
+      return;
+    }
 
-  output.textContent = JSON.stringify(data, null, 2);
+    // If the response is OK, parse the JSON data
+    const data = await response.json();
+
+    console.log(data);
+    alert("Upload successful! Check console for results.");
+
+  } catch (err) {
+    console.error(err);
+    alert("Request failed.");
+  }
 });
